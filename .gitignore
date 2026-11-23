@@ -1,0 +1,7 @@
+dist/
+dist-newstyle/
+.cabal-sandbox/
+cabal.project.local
+*.hi
+*.o
+mbt-haskell
