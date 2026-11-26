@@ -1,5 +1,7 @@
 module Model
     ( maquinaVendasFSM
+    , formatarTabelaModelo
+    , exportarDot
     ) where
 
 import Types
@@ -30,3 +32,19 @@ maquinaVendasFSM = FSM
         ]
     , estadoInicialFSM = Ociosa
     }
+
+formatarTabelaModelo :: FSM -> String
+formatarTabelaModelo fsm = unlines (map formatarLinha (transicoesFSM fsm))
+  where
+    formatarLinha t =
+        show (origemTransicao t)
+        ++ " --" ++ show (eventoTransicao t) ++ "--> "
+        ++ show (destinoTransicao t)
+
+exportarDot :: FSM -> String
+exportarDot fsm = unlines (["digraph MaquinaDeVendas {"] ++ map formatarSeta (transicoesFSM fsm) ++ ["}"])
+  where
+    formatarSeta t =
+        "  " ++ show (origemTransicao t)
+        ++ " -> " ++ show (destinoTransicao t)
+        ++ " [label=\"" ++ show (eventoTransicao t) ++ "\"];"
