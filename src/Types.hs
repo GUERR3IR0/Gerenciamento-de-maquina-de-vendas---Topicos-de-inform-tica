@@ -43,7 +43,9 @@ data FSM = FSM
 data CasoDeTeste = CasoDeTeste
     { descricaoCaso :: String
     , eventosCaso :: [Evento]
-    , estadoEsperadoCaso :: Estado
+    -- Just estado: termino valido; Nothing: rejeicao esperada.
+    -- Motivo e migracao: docs/decisoes-verifier.md.
+    , estadoEsperadoCaso :: Maybe Estado
     }
     deriving (Eq, Ord, Read, Show)
 
