@@ -1,5 +1,7 @@
 module Generator
     ( gerarTodosEstados
+    , gerarTodasTransicoes
+    , gerarCasosDeTeste
     ) where
 
 import Types
@@ -43,3 +45,29 @@ gerarTodosEstados fsm =
         }
     | (estado, caminho) <- caminhosAteEstados fsm
     ]
+
+gerarTodasTransicoes :: FSM -> [CasoDeTeste]
+gerarTodasTransicoes fsm =
+    [ CasoDeTeste
+        { descricaoCaso =
+            "Cobrir transicao "
+            ++ show (origemTransicao t)
+            ++ " -"
+            ++ show (eventoTransicao t)
+            ++ "-> "
+            ++ show (destinoTransicao t)
+        , eventosCaso = caminho ++ [eventoTransicao t]
+        , estadoEsperadoCaso = Just (destinoTransicao t)
+        }
+    | t <- transicoesFSM fsm
+    , Just caminho <- [caminhoAteEstado (origemTransicao t)]
+    ]
+  where
+    caminhos = caminhosAteEstados fsm
+    caminhoAteEstado estado = lookup estado caminhos
+
+gerarCasosDeTeste :: CriterioCobertura -> FSM -> [CasoDeTeste]
+gerarCasosDeTeste criterio fsm =
+    case criterio of
+        AllStates -> gerarTodosEstados fsm
+        AllTransitions -> gerarTodasTransicoes fsm
